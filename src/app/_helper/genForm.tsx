@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -12,7 +13,7 @@ export type zGenForm = {
     name: string;
     label: string;
     defaultValue?: string | number | boolean;
-    type: "text" | "number" | "email" | "password" | "custom";
+    type: "text" | "number" | "email" | "password" | "switch" | "custom";
     custom?: JSX.Element;
 }[];
 
@@ -71,7 +72,8 @@ export default function GeneratedForm(props: {
                                                 item.type === "number" ? <Input className="w-full" type="number" {...field} /> :
                                                     item.type === "email" ? <Input className="w-full" type="email" {...field} /> :
                                                         item.type === "password" ? <Input className="w-full" type="password" {...field} /> :
-                                                            item.type === "custom" ? item.custom : null
+                                                            item.type === "switch" ? <Switch className="ml-2" checked={field.value} onCheckedChange={field.onChange} /> :
+                                                                item.type === "custom" ? item.custom : null
                                         }
                                     </FormControl>
                                     <FormMessage />

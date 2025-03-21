@@ -29,7 +29,11 @@ export default function Project() {
                             <TabsTrigger value="music">Music</TabsTrigger>
                             <TabsTrigger value="subjects">Subjects</TabsTrigger>
                         </TabsList>
-                        <TabsContent value="general"><GeneralTab /></TabsContent>
+                        <TabsContent value="general"><GeneralTab defaultValue={{
+                            name: project.data?.name!,
+                            accessId: project.data?.accessId!,
+                            enabled: project.data?.enabled!
+                        }} /></TabsContent>
                         <TabsContent value="exams">Change your exam here.</TabsContent>
                         <TabsContent value="music">Change your music here.</TabsContent>
                         <TabsContent value="subjects">Change your subjects here.</TabsContent>

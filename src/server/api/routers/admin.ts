@@ -4,7 +4,7 @@ import {
   createTRPCRouter,
   protectedProcedure
 } from "@/server/api/trpc";
-import { createProjectSchema } from "../schemas/admin";
+import { createProjectSchema, projectGeneralTabSchema } from "../schemas/admin";
 
 export const adminRouter = createTRPCRouter({
   createProject: protectedProcedure
@@ -46,6 +46,20 @@ export const adminRouter = createTRPCRouter({
       return ctx.db.project.findFirst({
         where: {
           accessId: input
+        }
+      })
+    }),
+  setProjectGeneralTab: protectedProcedure
+    .input(projectGeneralTabSchema)
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.project.update({
+        where: {
+          accessId: input.accessId
+        },
+        data: {
+          name: input.name,
+          accessId: input.accessId,
+          enabled: input.enabled
         }
       })
     }),

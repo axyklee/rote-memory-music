@@ -1,26 +1,26 @@
 import GeneratedForm, { zGenForm } from "@/app/_helper/genForm"
 import { projectGeneralTabSchema } from "@/server/api/schemas/admin"
+import { z } from "zod";
 
-export default function GeneralTab() {
+export default function GeneralTab({ defaultValue }: { defaultValue: z.infer<typeof projectGeneralTabSchema> }) {
     const formGen: zGenForm = [
         {
             name: "name",
             label: "Name",
-            defaultValue: "123",
+            defaultValue: defaultValue.name,
             type: "text"
         },
         {
             name: "accessId",
             label: "Access ID",
-            defaultValue: "12345",
+            defaultValue: defaultValue.accessId,
             type: "text"
         },
         {
             name: "enabled",
             label: "Enabled",
-            type: "custom",
-            defaultValue: false,
-            custom: <input type="checkbox" />
+            type: "switch",
+            defaultValue: defaultValue.enabled,
         }
     ];
 
