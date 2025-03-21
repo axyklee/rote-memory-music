@@ -15,6 +15,10 @@ export const env = createEnv({
     AUTH_AUTHENTIK_SECRET: z.string(),
     AUTH_AUTHENTIK_ISSUER: z.string(),
     DATABASE_URL: z.string().url(),
+    MINIO_ENDPOINT: z.string(),
+    MINIO_ACCESS_KEY: z.string(),
+    MINIO_SECRET_KEY: z.string(),
+    MINIO_BUCKET: z.string(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -39,6 +43,10 @@ export const env = createEnv({
     AUTH_AUTHENTIK_SECRET: process.env.AUTH_AUTHENTIK_SECRET,
     AUTH_AUTHENTIK_ISSUER: process.env.AUTH_AUTHENTIK_ISSUER,
     DATABASE_URL: process.env.DATABASE_URL,
+    MINIO_ENDPOINT: process.env.MINIO_ENDPOINT,
+    MINIO_ACCESS_KEY: process.env.MINIO_ACCESS_KEY,
+    MINIO_SECRET_KEY: process.env.MINIO_SECRET_KEY,
+    MINIO_BUCKET: process.env.MINIO_BUCKET,
     NODE_ENV: process.env.NODE_ENV,
   },
   /**

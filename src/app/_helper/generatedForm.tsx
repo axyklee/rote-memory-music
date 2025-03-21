@@ -5,16 +5,19 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { ControllerRenderProps, useForm, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
 export type zGenForm = {
     name: string;
     label: string;
     defaultValue?: string | number | boolean;
-    type: "text" | "number" | "email" | "password" | "switch" | "custom";
-    custom?: JSX.Element;
+    type: "text" | "number" | "email" | "password" | "switch" | "hidden" | "custom";
+    custom?: (form: UseFormReturn<{
+        [x: string]: any;
+    }, any, undefined>) => JSX.Element;
 }[];
 
 /**
@@ -26,10 +29,16 @@ export type zGenForm = {
 export default function GeneratedForm(props: {
         schema: z.ZodObject<any>,
         formGen: zGenForm,
-        handleSubmit: (data: any) => any
+        handleSubmit: (data: any) => Promise<{
+            success: boolean;
+            message?: string;
+        }>
     }) {
+    const queryClient = useQueryClient();
+
     const [disabled, setDisabled] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
 
     const { schema, formGen, handleSubmit } = props;
 
@@ -45,16 +54,15 @@ export default function GeneratedForm(props: {
         // set is submitting to true
         setDisabled(true);
         const result = await handleSubmit(data);
-        if (!result) {
-            setError("Failed to create project");
+        if (!result.success) {
+            setError(result.message || "Failed to submit form");
+            setSuccess(null);
         } else {
             setError(null);
+            setSuccess(result.message || "Form submitted successfully");
         }
-        form.reset();
-        setTimeout(() => {
-            // wait for animation to finish
-            setDisabled(false);
-        }, 1000);
+        queryClient.invalidateQueries();
+        setDisabled(false);
     });
 
     return (
@@ -65,7 +73,10 @@ export default function GeneratedForm(props: {
                         <FormField key={item.name} control={form.control} name={item.name} render={({ field }) => (
                             <FormItem>
                                 <div className="my-3 max-w-96">
-                                    <FormLabel htmlFor={item.name}>{item.label}</FormLabel>
+                                    {
+                                        item.type !== "hidden" ?
+                                            <FormLabel htmlFor={item.name}>{item.label}</FormLabel> : null
+                                    }
                                     <FormControl>
                                         {
                                             item.type === "text" ? <Input className="w-full" {...field} /> :
@@ -73,7 +84,8 @@ export default function GeneratedForm(props: {
                                                     item.type === "email" ? <Input className="w-full" type="email" {...field} /> :
                                                         item.type === "password" ? <Input className="w-full" type="password" {...field} /> :
                                                             item.type === "switch" ? <Switch className="ml-2" checked={field.value} onCheckedChange={field.onChange} /> :
-                                                                item.type === "custom" ? item.custom : null
+                                                                item.type === "hidden" ? <Input className="w-full" type="hidden" {...field} /> :
+                                                                    item.type === "custom" ? item.custom!(form) : null
                                         }
                                     </FormControl>
                                     <FormMessage />
@@ -86,6 +98,7 @@ export default function GeneratedForm(props: {
                     Save
                 </Button>
                 {error && <p className="mt-2 text-red-500">{error}</p>}
+                {success && <p className="mt-2 text-green-500">{success}</p>}
             </form>
         </Form>
     )

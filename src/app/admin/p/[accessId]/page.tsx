@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from "@/trpc/react";
 import { useParams } from "next/navigation";
 import GeneralTab from "./_tabs/general";
+import MusicTab from "./_tabs/music";
 
 export default function Project() {
     const accessId = useParams().accessId as string;
@@ -29,13 +30,9 @@ export default function Project() {
                             <TabsTrigger value="music">Music</TabsTrigger>
                             <TabsTrigger value="subjects">Subjects</TabsTrigger>
                         </TabsList>
-                        <TabsContent value="general"><GeneralTab defaultValue={{
-                            name: project.data?.name!,
-                            accessId: project.data?.accessId!,
-                            enabled: project.data?.enabled!
-                        }} /></TabsContent>
+                        <TabsContent value="general"><GeneralTab accessId={accessId} /></TabsContent>
                         <TabsContent value="exams">Change your exam here.</TabsContent>
-                        <TabsContent value="music">Change your music here.</TabsContent>
+                        <TabsContent value="music"><MusicTab accessId={accessId} /></TabsContent>
                         <TabsContent value="subjects">Change your subjects here.</TabsContent>
                     </Tabs>
                 </div>

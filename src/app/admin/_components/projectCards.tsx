@@ -14,7 +14,14 @@ export default function ProjectCards() {
                 <Link href={`/admin/p/${project.accessId}`} key={project.accessId}>
                     <Card className="w-[297px]">
                         <CardHeader>
-                            <CardTitle>{project.name}</CardTitle>
+                            <CardTitle>
+                                <div className="flex items-center gap-2">
+                                    {project.name}
+                                    <div className={
+                                        ["h-5 w-5 rounded-md", project.enabled ? "bg-green-500" : "bg-red-500"].join(" ")
+                                    }></div>
+                                </div>
+                            </CardTitle>
                             <CardDescription>Code: {project.accessId}</CardDescription>
                         </CardHeader>
                         <CardContent>

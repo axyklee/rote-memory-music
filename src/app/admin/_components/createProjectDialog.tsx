@@ -10,8 +10,11 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { api } from "@/trpc/react";
 import { createProjectSchema } from "@/server/api/schemas/admin";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function CreateProjectDialog() {
+    const queryClient = useQueryClient();
+
     const [isOpen, setOpen] = useState(false);
     const [disabled, setDisabled] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -35,6 +38,7 @@ export default function CreateProjectDialog() {
         }
         form.reset();
         setOpen(false);
+        queryClient.invalidateQueries();
         setTimeout(() => {
             // wait for animation to finish
             setDisabled(false);
