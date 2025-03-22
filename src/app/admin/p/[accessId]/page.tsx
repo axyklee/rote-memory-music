@@ -7,6 +7,9 @@ import { useParams } from "next/navigation";
 import GeneralTab from "./_tabs/general";
 import MusicTab from "./_tabs/music";
 import ExamsTab from "./_tabs/exams";
+import SubjectsTab from "./_tabs/subjects";
+import ResultsTab from "./_tabs/results";
+import { Database, Music, PenSquare, Settings, User2 } from "lucide-react";
 
 export default function Project() {
     const accessId = useParams().accessId as string;
@@ -21,20 +24,29 @@ export default function Project() {
                         ["h-5 w-5 rounded-md", project.data?.enabled ? "bg-green-500" : "bg-red-500"].join(" ")
                     }></div>
                 </div>
-                <p className="text-lg">Access ID: <code className="bg-gray-200 p-1 rounded-sm">{project.data?.accessId}</code></p>
-                {/* <p className="text-lg">Enabled: {project.data?.enabled ? "True" : "False"}</p> */}
+                <p className="text-lg mb-2">Access ID: <code className="bg-gray-200 p-1 rounded-sm">{project.data?.accessId}</code></p>
+                <div className="flex items-center mb-5 gap-1 text-lg">
+                    <p>Ready:</p>
+                    <div className={
+                        ["h-3 w-3 rounded-md", project.data?.ready ? "bg-green-500" : "bg-red-500"].join(" ")
+                    }></div>
+                    <p>{project.data?.ready ? "True" : "False"}</p>
+                </div>
+                <p className="text-lg"></p>
                 <div className="my-5">
                     <Tabs defaultValue="general" className="w-[400px]">
                         <TabsList>
-                            <TabsTrigger value="general">General</TabsTrigger>
-                            <TabsTrigger value="exams">Exams</TabsTrigger>
-                            <TabsTrigger value="music">Music</TabsTrigger>
-                            <TabsTrigger value="subjects">Subjects</TabsTrigger>
+                            <TabsTrigger value="general" className="flex gap-1"><Settings className="w-4" />General</TabsTrigger>
+                            <TabsTrigger value="exams" className="flex gap-1"><PenSquare className="w-4" /> Exams</TabsTrigger>
+                            <TabsTrigger value="music" className="flex gap-1"><Music className="w-4" /> Music</TabsTrigger>
+                            <TabsTrigger value="subjects" className="flex gap-1"><User2 className="w-4" /> Research Subjects</TabsTrigger>
+                            <TabsTrigger value="results" className="flex gap-1"><Database className="w-4" /> Results</TabsTrigger>
                         </TabsList>
                         <TabsContent value="general"><GeneralTab accessId={accessId} /></TabsContent>
                         <TabsContent value="exams"><ExamsTab accessId={accessId} /></TabsContent>
                         <TabsContent value="music"><MusicTab accessId={accessId} /></TabsContent>
-                        <TabsContent value="subjects">Change your subjects here.</TabsContent>
+                        <TabsContent value="subjects"><SubjectsTab accessId={accessId} /></TabsContent>
+                        <TabsContent value="results"><ResultsTab accessId={accessId} /></TabsContent>
                     </Tabs>
                 </div>
             </>

@@ -1,4 +1,7 @@
+import { access } from "fs";
 import { z } from "zod";
+
+export const projectAccessId = z.string().regex(/^\d{5}$/)
 
 export const createProjectSchema = z.object({
     name: z.string(),
@@ -6,19 +9,19 @@ export const createProjectSchema = z.object({
 
 export const projectGeneralTabSchema = z.object({
     name: z.string(),
-    origAccessId: z.string().regex(/^\d{5}$/),
-    accessId: z.string().regex(/^\d{5}$/),
+    origAccessId: projectAccessId,
+    accessId: projectAccessId,
     enabled: z.boolean(),
 })
 
 export const projectMusicTabSchema = z.object({
-    accessId: z.string().regex(/^\d{5}$/),
+    accessId: projectAccessId,
     name: z.string().min(1),
     path: z.string().min(1, "Please upload a file first"),
 })
 
 export const projectExamsTabSchema = z.object({
-    accessId: z.string().regex(/^\d{5}$/),
+    accessId: projectAccessId,
     name: z.string().min(1),
     wordList: z.string()
         .superRefine((value, ctx) => {
@@ -51,4 +54,36 @@ export const projectExamsTabSchema = z.object({
             }
         }).transform((value) => JSON.parse(value)).transform((value) => JSON.stringify(value)),
     readingTime: z.coerce.number().int().min(1),
+})
+
+export const projectSubjectsTabSchema = z.object({
+    accessId: projectAccessId,
+    studentId: z.coerce.number().gte(10000000, "Student ID must be 8 digits.").lte(99999999, "Student ID must be 8 digits."),
+    name: z.string().optional(),
+})
+
+export const projectSubjectsTabMassSchema = z.object({
+    accessId: projectAccessId,
+    studentIdList: z.string().superRefine((value, ctx) => {
+        let valueArr = value.split("\n").map((item) => item.trim())
+        if (valueArr.length === 0) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "You must have at least one student ID",
+            });
+        }
+        if (!valueArr.every((item) => /^\d{8}$/.test(item))) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Student IDs must be 8 digits",
+            });
+        }
+        // no duplicates
+        if (new Set(valueArr).size !== valueArr.length) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Student IDs must be unique",
+            });
+        }
+    })
 })

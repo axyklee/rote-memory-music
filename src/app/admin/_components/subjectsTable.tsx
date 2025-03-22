@@ -6,37 +6,41 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { api } from "@/trpc/react";
 import { useQueryClient } from "@tanstack/react-query";
 
-export default function MusicTable({ accessId }: { accessId: string }) {
+export default function SubjectsTable({ accessId }: { accessId: string }) {
     const queryClient = useQueryClient();
 
     const project = api.admin.getProject.useQuery(accessId);
-    const musicList = api.admin.getMusic.useQuery(accessId);
-    const deleteMusic = api.admin.deleteMusic.useMutation();
+    const subjectList = api.admin.getSubjects.useQuery(accessId);
+    const deleteSubject = api.admin.deleteSubject.useMutation();
+    const generateSubjectOrders = api.admin.generateSubjectOrders.useMutation();
 
     return (
-        musicList.isSuccess ? (
+        subjectList.isSuccess ? (
             <div className="w-[600px] md:w-[800px] max-w-[90vw]">
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-[200px]">Name</TableHead>
-                            <TableHead className="w-full min-w-[200px]">Listen</TableHead>
+                            <TableHead>Student ID</TableHead>
+                            <TableHead>Name</TableHead>
+                            <TableHead>Music Order</TableHead>
+                            <TableHead>Exam Order</TableHead>
+                            <TableHead>Results Count</TableHead>
                             <TableHead>Action</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {musicList.data?.map((music) => (
-                            <TableRow key={music.id}>
-                                <TableCell>{music.name}</TableCell>
+                        {subjectList.data?.map((subject) => (
+                            <TableRow key={subject.id}>
                                 <TableCell>
-                                    <audio controls className="w-full">
-                                        <source src={music.url} type="audio/mpeg" />
-                                        Your browser does not support the audio element.
-                                    </audio>
+                                    <code>{subject.studentId}</code>
                                 </TableCell>
+                                <TableCell>{subject.name}</TableCell>
+                                <TableCell>[{subject.music.join(", ")}]</TableCell>
+                                <TableCell>[{subject.exam.join(", ")}]</TableCell>
+                                <TableCell>{subject.result.length}</TableCell>
                                 <TableCell><Button variant="destructive" disabled={project.data?.enabled} onClick={
                                     async () => {
-                                        await deleteMusic.mutateAsync(music.id);
+                                        await deleteSubject.mutateAsync(subject.id);
                                         queryClient.invalidateQueries();
                                     }
                                 }>Delete</Button></TableCell>
@@ -44,6 +48,13 @@ export default function MusicTable({ accessId }: { accessId: string }) {
                         ))}
                     </TableBody>
                 </Table>
+                <Button variant="default" className="bg-blue-700 hover:bg-blue-600 w-full" onClick={async function (this: HTMLButtonElement) {
+                    generateSubjectOrders.mutate(accessId);
+                    queryClient.invalidateQueries();
+                }} disabled={generateSubjectOrders.isPending || project.data?.enabled}>Generate orders</Button>
+                <p className="text-sm text-gray-500 mt-2">This will generate orders for all subjects in this project, making the project "ready."</p>
+                <p className="text-sm text-green-500">{generateSubjectOrders.isSuccess && "Successfully generated orders."}</p>
+                <p className="text-sm text-red-500">{generateSubjectOrders.error?.message}</p>
             </div>
         ) : (
             <div className="space-y-1">

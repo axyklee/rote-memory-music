@@ -20,6 +20,8 @@ model Music {
   projectId Int
   url       String
 
+  results   Result[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -44,6 +46,8 @@ model Exam {
 
 model Result {
   id        Int @id @default(autoincrement())
+  projectId Int
+  musicId   Int
   subjectId Int
   examId    Int
   score     Int
@@ -53,6 +57,8 @@ model Result {
 
   subject Subject @relation(fields: [subjectId], references: [id])
   exam    Exam    @relation(fields: [examId], references: [id])
+  music   Music   @relation(fields: [musicId], references: [id])
+  project Project @relation(fields: [projectId], references: [id])
 }
 
 model Subject {
@@ -76,11 +82,13 @@ model Project {
   id        Int       @id @default(autoincrement())
   accessId  String    @unique
   // 6 digit code
+  ready     Boolean   @default(false)
   enabled   Boolean
   name      String
   subjects  Subject[]
   exams     Exam[]
-  musics      Music[]
+  musics    Music[]
+  results   Result[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

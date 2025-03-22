@@ -1,4 +1,6 @@
 import GeneratedForm, { zGenForm } from "@/app/_helper/generatedForm"
+import { Switch } from "@/components/ui/switch";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { projectGeneralTabSchema } from "@/server/api/schemas/admin"
 import { api } from "@/trpc/react";
 import { z } from "zod";
@@ -29,8 +31,24 @@ export default function GeneralTab({ accessId }: { accessId: string }) {
         {
             name: "enabled",
             label: "Enabled",
-            type: "switch",
+            type: "custom",
             defaultValue: project.data?.enabled,
+            custom: (_, field) => (
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <span>
+                                <Switch className="ml-2" checked={field.value} onCheckedChange={field.onChange} disabled={!project.data?.ready} />
+                            </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            {!project.data?.ready ? <p>Project is not ready. Please generate subject lists from the Subjects tab.</p> :
+                                <p>Enable this project to the public.</p>}
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            )
+            
         }
     ];
 

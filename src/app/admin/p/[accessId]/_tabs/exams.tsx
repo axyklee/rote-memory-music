@@ -5,6 +5,7 @@ import { api } from "@/trpc/react";
 import { z } from "zod";
 
 export default function ExamsTab({ accessId }: { accessId: string }) {
+    const project = api.admin.getProject.useQuery(accessId);
     const createExam = api.admin.createExam.useMutation();
 
     const formGen: zGenForm = [
@@ -38,24 +39,26 @@ export default function ExamsTab({ accessId }: { accessId: string }) {
     return (
         <div className="flex flex-col gap-5">
             <ExamsTable accessId={accessId} />
-            <GeneratedForm schema={projectExamsTabSchema}
-                formGen={formGen}
-                handleSubmit={async (data: z.infer<typeof projectExamsTabSchema>, form) => {
-                    return await createExam.mutateAsync(data)
-                        .then(() => {
-                            form.reset();
-                            return {
-                                success: true,
-                                message: "Exam updated successfully"
-                            };
-                        }).catch((error: Error) => {
-                            return {
-                                success: false,
-                                message: `Error: ${error.message}`
-                            };
-                        });
-                }}
-            />
+            {project.data?.enabled ? <div className="text-red-500 w-[600px]">Project is enabled. You cannot modify exams to an enabled project.</div> :
+                <GeneratedForm schema={projectExamsTabSchema}
+                    formGen={formGen}
+                    handleSubmit={async (data: z.infer<typeof projectExamsTabSchema>, form) => {
+                        return await createExam.mutateAsync(data)
+                            .then(() => {
+                                form.reset();
+                                return {
+                                    success: true,
+                                    message: "Exam updated successfully"
+                                };
+                            }).catch((error: Error) => {
+                                return {
+                                    success: false,
+                                    message: `Error: ${error.message}`
+                                };
+                            });
+                    }}
+                />
+            }
         </div>
     );
 }

@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { ControllerRenderProps, useForm, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
 export type zGenForm = {
@@ -17,9 +17,12 @@ export type zGenForm = {
     defaultValue?: string | number | boolean;
     type: "text" | "number" | "email" | "password" | "switch" | "textarea" | "hidden" | "custom";
     helperText?: string;
+    disabled?: boolean;
     custom?: (form: UseFormReturn<{
         [x: string]: any;
-    }, any, undefined>) => JSX.Element;
+    }, any, undefined>, field: ControllerRenderProps<{
+        [x: string]: any;
+    }, string>) => JSX.Element;
 }[];
 
 /**
@@ -83,14 +86,14 @@ export default function GeneratedForm(props: {
                                     }
                                     <FormControl>
                                         {
-                                            item.type === "text" ? <Input className="w-full" {...field} /> :
-                                                item.type === "number" ? <Input className="w-full" type="number" {...field} /> :
-                                                    item.type === "email" ? <Input className="w-full" type="email" {...field} /> :
-                                                        item.type === "password" ? <Input className="w-full" type="password" {...field} /> :
-                                                            item.type === "switch" ? <Switch className="ml-2" checked={field.value} onCheckedChange={field.onChange} /> :
-                                                                item.type === "textarea" ? <Textarea className="w-full" {...field} /> :
-                                                                    item.type === "hidden" ? <Input className="w-full" type="hidden" {...field} /> :
-                                                                        item.type === "custom" ? item.custom!(form) : null
+                                            item.type === "text" ? <Input className="w-full" disabled={item.disabled || false} {...field} /> :
+                                                item.type === "number" ? <Input className="w-full" type="number" disabled={item.disabled || false} {...field} /> :
+                                                    item.type === "email" ? <Input className="w-full" type="email" disabled={item.disabled || false} {...field} /> :
+                                                        item.type === "password" ? <Input className="w-full" type="password" disabled={item.disabled || false} {...field} /> :
+                                                            item.type === "switch" ? <Switch className="ml-2" checked={field.value} onCheckedChange={field.onChange} disabled={item.disabled || false} /> :
+                                                                item.type === "textarea" ? <Textarea className="w-full" disabled={item.disabled || false} {...field} /> :
+                                                                    item.type === "hidden" ? <Input className="w-full" type="hidden" disabled={item.disabled || false} {...field} /> :
+                                                                        item.type === "custom" ? item.custom!(form, field) : null
                                         }
                                     </FormControl>
                                     { item.helperText && <FormDescription>{item.helperText}</FormDescription> }

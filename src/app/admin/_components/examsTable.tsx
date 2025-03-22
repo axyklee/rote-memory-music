@@ -9,6 +9,7 @@ import { useQueryClient } from "@tanstack/react-query";
 export default function ExamsTable({ accessId }: { accessId: string }) {
     const queryClient = useQueryClient();
 
+    const project = api.admin.getProject.useQuery(accessId);
     const examList = api.admin.getExams.useQuery(accessId);
     const deleteExam = api.admin.deleteExam.useMutation();
 
@@ -29,9 +30,10 @@ export default function ExamsTable({ accessId }: { accessId: string }) {
                             <TableRow key={exam.id}>
                                 <TableCell>{exam.name}</TableCell>
                                 <TableCell>
-                                    <p className="w-[200px] text-wrap break-words">{exam.words}</p></TableCell>
+                                    <p className="w-[200px] text-wrap break-words">{exam.words}</p>
+                                </TableCell>
                                 <TableCell>{exam.readingTime}</TableCell>
-                                <TableCell><Button variant="destructive" onClick={
+                                <TableCell><Button variant="destructive" disabled={project.data?.enabled} onClick={
                                     async () => {
                                         await deleteExam.mutateAsync(exam.id);
                                         queryClient.invalidateQueries();

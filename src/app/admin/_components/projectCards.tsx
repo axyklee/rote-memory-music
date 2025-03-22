@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { api } from "@/trpc/react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Database, Music, PenSquare, User2 } from "lucide-react";
 
 export default function ProjectCards() {
     const projects = api.admin.getProjects.useQuery();
@@ -22,10 +23,13 @@ export default function ProjectCards() {
                                     }></div>
                                 </div>
                             </CardTitle>
-                            <CardDescription>Code: {project.accessId}</CardDescription>
+                            <CardDescription>Code: <code>{project.accessId}</code></CardDescription>
                         </CardHeader>
                         <CardContent>
-                            {project.enabled ? "Enabled" : "Disabled"}
+                            <div className="flex gap-2"><PenSquare />{project.exams.length} exams</div>
+                            <div className="flex gap-2"><Music />{project.musics.length} music</div>
+                            <div className="flex gap-2"><User2 />{project.subjects.length} research subjects</div>
+                            <div className="flex gap-2"><Database />{project.results.length} results</div>
                         </CardContent>
                     </Card>
                 </Link>

@@ -7,6 +7,7 @@ import { useState } from "react";
 import { z } from "zod";
 
 export default function MusicTab({ accessId }: { accessId: string }) {
+    const project = api.admin.getProject.useQuery(accessId);
     const uploadUrl = api.admin.getMusicUploadUrl.useQuery();
     const createMusic = api.admin.createMusic.useMutation();
 
@@ -84,29 +85,31 @@ export default function MusicTab({ accessId }: { accessId: string }) {
         <div className="flex flex-col gap-5">
             <MusicTable accessId={accessId} />
 
-            <GeneratedForm schema={projectMusicTabSchema}
-                formGen={formGen}
-                handleSubmit={async (data: z.infer<typeof projectMusicTabSchema>, form) => {
-                    return await createMusic.mutateAsync(data)
-                        .then(() => {
-                            form.reset();
-                            const fileInput = form.getValues("file");
-                            if (fileInput) {
-                                fileInput.value = null;
+            {project.data?.enabled ? <div className="text-red-500 w-[500px]">Project is enabled. You cannot modify music to an enabled project.</div> :
+                <GeneratedForm schema={projectMusicTabSchema}
+                    formGen={formGen}
+                    handleSubmit={async (data: z.infer<typeof projectMusicTabSchema>, form) => {
+                        return await createMusic.mutateAsync(data)
+                            .then(() => {
+                                form.reset();
+                                const fileInput = form.getValues("file");
+                                if (fileInput) {
+                                    fileInput.value = null;
+                                }
+                                return {
+                                    success: true,
+                                    message: "Music updated successfully"
+                                };
                             }
-                            return {
-                                success: true,
-                                message: "Music updated successfully"
-                            };
-                        }
-                        ).catch((error: Error) => {
-                            console.log(error.message)
-                            return {
-                                success: false,
-                                message: `Error: ${error.message}`
-                            };
-                        });
-                }} />
+                            ).catch((error: Error) => {
+                                console.log(error.message)
+                                return {
+                                    success: false,
+                                    message: `Error: ${error.message}`
+                                };
+                            });
+                    }} />
+            }
         </div>
     </>)
 }
