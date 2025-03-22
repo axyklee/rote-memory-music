@@ -6,6 +6,7 @@ import { api } from "@/trpc/react";
 import { useParams } from "next/navigation";
 import GeneralTab from "./_tabs/general";
 import MusicTab from "./_tabs/music";
+import ExamsTab from "./_tabs/exams";
 
 export default function Project() {
     const accessId = useParams().accessId as string;
@@ -31,7 +32,7 @@ export default function Project() {
                             <TabsTrigger value="subjects">Subjects</TabsTrigger>
                         </TabsList>
                         <TabsContent value="general"><GeneralTab accessId={accessId} /></TabsContent>
-                        <TabsContent value="exams">Change your exam here.</TabsContent>
+                        <TabsContent value="exams"><ExamsTab accessId={accessId} /></TabsContent>
                         <TabsContent value="music"><MusicTab accessId={accessId} /></TabsContent>
                         <TabsContent value="subjects">Change your subjects here.</TabsContent>
                     </Tabs>

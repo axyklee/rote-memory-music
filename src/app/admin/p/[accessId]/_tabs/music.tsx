@@ -8,7 +8,7 @@ import { z } from "zod";
 
 export default function MusicTab({ accessId }: { accessId: string }) {
     const uploadUrl = api.admin.getMusicUploadUrl.useQuery();
-    const uploadMusic = api.admin.uploadMusic.useMutation();
+    const createMusic = api.admin.createMusic.useMutation();
 
     const [fileUploadMsg, setFileUploadMsg] = useState<string | null>(null);
 
@@ -30,7 +30,7 @@ export default function MusicTab({ accessId }: { accessId: string }) {
             label: "File",
             type: "custom",
             custom: (form) => <>
-                <Input type="file" onChange={async (e) => {
+                <Input type="file" accept="audio/mpeg" onChange={async (e) => {
                     form.setValue("path", "");
                     form.clearErrors("file");
                     setFileUploadMsg(null);
@@ -86,9 +86,14 @@ export default function MusicTab({ accessId }: { accessId: string }) {
 
             <GeneratedForm schema={projectMusicTabSchema}
                 formGen={formGen}
-                handleSubmit={async (data: z.infer<typeof projectMusicTabSchema>) => {
-                    return await uploadMusic.mutateAsync(data)
+                handleSubmit={async (data: z.infer<typeof projectMusicTabSchema>, form) => {
+                    return await createMusic.mutateAsync(data)
                         .then(() => {
+                            form.reset();
+                            const fileInput = form.getValues("file");
+                            if (fileInput) {
+                                fileInput.value = null;
+                            }
                             return {
                                 success: true,
                                 message: "Music updated successfully"

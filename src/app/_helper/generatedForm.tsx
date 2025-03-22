@@ -1,20 +1,22 @@
 "use client"
 
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { ControllerRenderProps, useForm, UseFormReturn } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
 export type zGenForm = {
     name: string;
     label: string;
     defaultValue?: string | number | boolean;
-    type: "text" | "number" | "email" | "password" | "switch" | "hidden" | "custom";
+    type: "text" | "number" | "email" | "password" | "switch" | "textarea" | "hidden" | "custom";
+    helperText?: string;
     custom?: (form: UseFormReturn<{
         [x: string]: any;
     }, any, undefined>) => JSX.Element;
@@ -29,7 +31,9 @@ export type zGenForm = {
 export default function GeneratedForm(props: {
         schema: z.ZodObject<any>,
         formGen: zGenForm,
-        handleSubmit: (data: any) => Promise<{
+        handleSubmit: (data: any, form: UseFormReturn<{
+            [x: string]: any;
+        }, any, undefined>) => Promise<{
             success: boolean;
             message?: string;
         }>
@@ -53,7 +57,7 @@ export default function GeneratedForm(props: {
     const formHandleSubmit = form.handleSubmit(async (data) => {
         // set is submitting to true
         setDisabled(true);
-        const result = await handleSubmit(data);
+        const result = await handleSubmit(data, form);
         if (!result.success) {
             setError(result.message || "Failed to submit form");
             setSuccess(null);
@@ -84,10 +88,12 @@ export default function GeneratedForm(props: {
                                                     item.type === "email" ? <Input className="w-full" type="email" {...field} /> :
                                                         item.type === "password" ? <Input className="w-full" type="password" {...field} /> :
                                                             item.type === "switch" ? <Switch className="ml-2" checked={field.value} onCheckedChange={field.onChange} /> :
-                                                                item.type === "hidden" ? <Input className="w-full" type="hidden" {...field} /> :
-                                                                    item.type === "custom" ? item.custom!(form) : null
+                                                                item.type === "textarea" ? <Textarea className="w-full" {...field} /> :
+                                                                    item.type === "hidden" ? <Input className="w-full" type="hidden" {...field} /> :
+                                                                        item.type === "custom" ? item.custom!(form) : null
                                         }
                                     </FormControl>
+                                    { item.helperText && <FormDescription>{item.helperText}</FormDescription> }
                                     <FormMessage />
                                 </div>
                             </FormItem>

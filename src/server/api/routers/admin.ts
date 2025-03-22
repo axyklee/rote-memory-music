@@ -4,7 +4,7 @@ import {
   createTRPCRouter,
   protectedProcedure
 } from "@/server/api/trpc";
-import { createProjectSchema, projectGeneralTabSchema, projectMusicTabSchema } from "../schemas/admin";
+import { createProjectSchema, projectExamsTabSchema, projectGeneralTabSchema, projectMusicTabSchema } from "../schemas/admin";
 import { env } from "@/env";
 
 export const adminRouter = createTRPCRouter({
@@ -51,6 +51,8 @@ export const adminRouter = createTRPCRouter({
         }
       })
     }),
+
+  // General Tab
   setProjectGeneralTab: protectedProcedure
     .input(projectGeneralTabSchema)
     .mutation(async ({ ctx, input }) => {
@@ -65,6 +67,52 @@ export const adminRouter = createTRPCRouter({
         }
       })
     }),
+
+  // Exams Tab
+  getExams: protectedProcedure
+    .input(z.string().regex(/^\d{5}$/))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.exam.findMany({
+        where: {
+          project: {
+            accessId: input
+          }
+        },
+        select: {
+          id: true,
+          name: true,
+          words: true,
+          readingTime: true
+        }
+      })
+    }),
+  createExam: protectedProcedure
+    .input(projectExamsTabSchema)
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.exam.create({
+        data: {
+          project: {
+            connect: {
+              accessId: input.accessId
+            }
+          },
+          name: input.name,
+          words: input.wordList as string,
+          readingTime: input.readingTime
+        }
+      })
+    }),
+  deleteExam: protectedProcedure
+    .input(z.number().int())
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.exam.delete({
+        where: {
+          id: input
+        }
+      })
+    }),
+
+  // Music Tab
   getMusic: protectedProcedure
     .input(z.string().regex(/^\d{5}$/))
     .query(async ({ ctx, input }) => {
@@ -93,7 +141,10 @@ export const adminRouter = createTRPCRouter({
         where: {
           id: input
         }
-      })
+      }).then((music) => {
+        ctx.s3.removeObject(env.MINIO_BUCKET, music.url);
+        return music;
+      });
     }),
   getMusicUploadUrl: protectedProcedure
     .query(async ({ ctx }) => {
@@ -103,7 +154,7 @@ export const adminRouter = createTRPCRouter({
         url: await ctx.s3.presignedPutObject(env.MINIO_BUCKET, path, 60 * 60) // 1 hour
       }
     }),
-  uploadMusic: protectedProcedure
+  createMusic: protectedProcedure
     .input(projectMusicTabSchema)
     .mutation(async ({ ctx, input }) => {
       return ctx.db.music.create({

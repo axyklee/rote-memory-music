@@ -32,6 +32,8 @@ model Exam {
   projectId Int
   words     String
   // [ "word1", "word2", "word3" ]
+  readingTime Int
+  // in seconds
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
