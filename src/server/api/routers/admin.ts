@@ -115,16 +115,6 @@ export const adminRouter = createTRPCRouter({
       if (input.enabled && !project.ready) {
         throw new Error("Project is not ready. Please generate subject lists from the Subjects tab.");
       }
-      if (!input.enabled) {
-        await ctx.db.project.update({
-          where: {
-            accessId: input.origAccessId
-          },
-          data: {
-            ready: false
-          }
-        });
-      }
       return await ctx.db.project.update({
         where: {
           accessId: input.origAccessId
