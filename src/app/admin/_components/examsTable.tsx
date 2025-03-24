@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { api } from "@/trpc/react";
 import { useQueryClient } from "@tanstack/react-query";
+import { Trash2 } from "lucide-react";
 
 export default function ExamsTable({ accessId }: { accessId: string }) {
     const queryClient = useQueryClient();
@@ -21,7 +22,7 @@ export default function ExamsTable({ accessId }: { accessId: string }) {
                         <TableRow>
                             <TableHead className="w-[200px]">Name</TableHead>
                             <TableHead className="w-[300px]">Word List</TableHead>
-                            <TableHead>Reading Time (seconds)</TableHead>
+                            <TableHead>Message</TableHead>
                             <TableHead>Action</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -32,13 +33,15 @@ export default function ExamsTable({ accessId }: { accessId: string }) {
                                 <TableCell>
                                     <p className="w-[200px] text-wrap break-words">{exam.words}</p>
                                 </TableCell>
-                                <TableCell>{exam.readingTime}</TableCell>
+                                {project.data?.testItems! > JSON.parse(exam.words).length ?
+                                    <TableCell className="text-yellow-800 bg-yellow-50">Exam items less than given to students.</TableCell> :
+                                    <TableCell className=""></TableCell>}
                                 <TableCell><Button variant="destructive" disabled={project.data?.enabled} onClick={
                                     async () => {
                                         await deleteExam.mutateAsync(exam.id);
                                         queryClient.invalidateQueries();
                                     }
-                                }>Delete</Button></TableCell>
+                                }><Trash2 /></Button></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

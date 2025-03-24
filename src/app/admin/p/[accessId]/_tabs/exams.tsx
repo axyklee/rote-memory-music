@@ -27,13 +27,7 @@ export default function ExamsTab({ accessId }: { accessId: string }) {
             defaultValue: "[]",
             type: "textarea",
             helperText: "Enter a list of words separated by commas and enclosed in square brackets. Eg. [\"apple\", \"banana\", \"cherry\"]"
-        },
-        {
-            name: "readingTime",
-            label: "Reading Time (seconds)",
-            defaultValue: 30,
-            type: "number"
-        },
+        }
     ]
 
     return (

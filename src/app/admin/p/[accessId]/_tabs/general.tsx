@@ -29,6 +29,18 @@ export default function GeneralTab({ accessId }: { accessId: string }) {
             type: "text"
         },
         {
+            name: "testItems",
+            label: "Test Items",
+            defaultValue: project.data?.testItems,
+            type: "number"
+        },
+        {
+            name: "readingTime",
+            label: "Reading Time",
+            defaultValue: project.data?.readingTime,
+            type: "number"
+        },
+        {
             name: "enabled",
             label: "Enabled",
             type: "custom",

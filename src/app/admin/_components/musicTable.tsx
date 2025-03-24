@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { api } from "@/trpc/react";
 import { useQueryClient } from "@tanstack/react-query";
+import { Trash2 } from "lucide-react";
 
 export default function MusicTable({ accessId }: { accessId: string }) {
     const queryClient = useQueryClient();
@@ -39,7 +40,7 @@ export default function MusicTable({ accessId }: { accessId: string }) {
                                         await deleteMusic.mutateAsync(music.id);
                                         queryClient.invalidateQueries();
                                     }
-                                }>Delete</Button></TableCell>
+                                }><Trash2 /></Button></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

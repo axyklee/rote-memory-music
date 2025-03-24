@@ -11,6 +11,8 @@ export const projectGeneralTabSchema = z.object({
     name: z.string(),
     origAccessId: projectAccessId,
     accessId: projectAccessId,
+    testItems: z.coerce.number().int().min(1),
+    readingTime: z.coerce.number().int().min(1),
     enabled: z.boolean(),
 })
 
@@ -53,7 +55,6 @@ export const projectExamsTabSchema = z.object({
                 });
             }
         }).transform((value) => JSON.parse(value)).transform((value) => JSON.stringify(value)),
-    readingTime: z.coerce.number().int().min(1),
 })
 
 export const projectSubjectsTabSchema = z.object({

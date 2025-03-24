@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { auth, signIn, signOut } from "@/server/auth";
 import { HydrateClient } from "@/trpc/server";
+import { Music } from "lucide-react";
 import Link from "next/link";
 
 export default async function AdminLayout({
@@ -13,7 +14,7 @@ export default async function AdminLayout({
             <div className="w-full bg-gradient-to-r from-zinc-800 to-zinc-900 h-16 mb-10">
                 <div className="flex items-center justify-between gap-5 xl:mx-auto mx-3 h-10 max-w-[1250px] pt-6">
                     <Link href="/admin">
-                        <h1 className="text-xl text-white">Rote-Memory-Music Admin Dashboard</h1>
+                        <h1 className="text-xl text-white flex gap-2 items-center"><Music /> Rote-Memory-Music Admin Dashboard</h1>
                     </Link>
                     {
                         session?.user ? (

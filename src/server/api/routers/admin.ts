@@ -134,8 +134,7 @@ export const adminRouter = createTRPCRouter({
         select: {
           id: true,
           name: true,
-          words: true,
-          readingTime: true
+          words: true
         }
       })
     }),
@@ -152,8 +151,7 @@ export const adminRouter = createTRPCRouter({
             }
           },
           name: input.name,
-          words: input.wordList as string,
-          readingTime: input.readingTime
+          words: input.wordList as string
         }
       }).then(async (exam) => {
         await ctx.db.project.update({

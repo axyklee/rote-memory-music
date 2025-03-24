@@ -26,10 +26,10 @@ export default function ProjectCards() {
                             <CardDescription>Code: <code>{project.accessId}</code></CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div className="flex gap-2"><PenSquare />{project.exams.length} exams</div>
-                            <div className="flex gap-2"><Music />{project.musics.length} music</div>
-                            <div className="flex gap-2"><User2 />{project.subjects.length} research subjects</div>
-                            <div className="flex gap-2"><Database />{project.results.length} results</div>
+                            <div className="flex items-center gap-2"><PenSquare className="w-5" />{project.exams.length} exams</div>
+                            <div className="flex items-center gap-2"><Music className="w-5" />{project.musics.length} music</div>
+                            <div className="flex items-center gap-2"><User2 className="w-5" />{project.subjects.length} research subjects</div>
+                            <div className="flex items-center gap-2"><Database className="w-5" />{project.results.length} results</div>
                         </CardContent>
                     </Card>
                 </Link>
