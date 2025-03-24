@@ -1,9 +1,9 @@
-import GeneratedForm, { zGenForm } from "@/app/_helper/generatedForm"
+import GeneratedForm, { type zGenForm } from "@/app/_helper/generatedForm"
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { projectGeneralTabSchema } from "@/server/api/schemas/admin"
 import { api } from "@/trpc/react";
-import { z } from "zod";
+import { type z } from "zod";
 
 export default function GeneralTab({ accessId }: { accessId: string }) {
     const project = api.admin.getProject.useQuery(accessId);
@@ -36,7 +36,7 @@ export default function GeneralTab({ accessId }: { accessId: string }) {
         },
         {
             name: "readingTime",
-            label: "Reading Time",
+            label: "Reading Time (seconds)",
             defaultValue: project.data?.readingTime,
             type: "number"
         },
@@ -50,7 +50,7 @@ export default function GeneralTab({ accessId }: { accessId: string }) {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <span>
-                                <Switch className="ml-2" checked={field.value} onCheckedChange={field.onChange} disabled={!project.data?.ready} />
+                                <Switch className="ml-2" checked={field.value as boolean} onCheckedChange={field.onChange} disabled={!project.data?.ready} />
                             </span>
                         </TooltipTrigger>
                         <TooltipContent>

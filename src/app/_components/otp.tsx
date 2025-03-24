@@ -21,7 +21,7 @@ export default function OTP({ redirectUrl, length }: OTPProps) {
                 setError("Please enter a code")
                 return
             }
-            const value = parseInt(e.currentTarget.querySelector("input")?.value!)
+            const value = parseInt(e.currentTarget.querySelector("input")?.value ?? "0")
 
             if (value && Math.log10(value) >= length - 1 && Math.log10(value) < length) {
                 setError(null)

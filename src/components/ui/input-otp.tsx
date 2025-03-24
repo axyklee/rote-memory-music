@@ -1,3 +1,6 @@
+// @ts-nocheck
+/* eslint-disable */
+
 "use client"
 
 import * as React from "react"

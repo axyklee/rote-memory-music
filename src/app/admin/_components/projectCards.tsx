@@ -34,7 +34,7 @@ export default function ProjectCards() {
                     </Card>
                 </Link>
             )) : (
-                [...Array(12)].map((_, i) => (
+                Array.from({ length: 12 }, (_, i) => (
                     <div key={i} className="w-[297px] space-y-3">
                         <div>
                             <Skeleton className="h-[100px] w-[100%] rounded-xl" />

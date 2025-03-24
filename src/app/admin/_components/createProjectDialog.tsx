@@ -2,7 +2,7 @@
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { type z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -38,7 +38,7 @@ export default function CreateProjectDialog() {
         }
         form.reset();
         setOpen(false);
-        queryClient.invalidateQueries();
+        await queryClient.invalidateQueries();
         setTimeout(() => {
             // wait for animation to finish
             setDisabled(false);

@@ -42,7 +42,7 @@ export default function SubjectsTable({ accessId }: { accessId: string }) {
                                 <TableCell><Button variant="destructive" disabled={project.data?.enabled} onClick={
                                     async () => {
                                         await deleteSubject.mutateAsync(subject.id);
-                                        queryClient.invalidateQueries();
+                                        await queryClient.invalidateQueries();
                                     }
                                 }><Trash2 /></Button></TableCell>
                             </TableRow>
@@ -51,9 +51,9 @@ export default function SubjectsTable({ accessId }: { accessId: string }) {
                 </Table>
                 <Button variant="default" className="bg-blue-700 hover:bg-blue-600 w-full" onClick={async function (this: HTMLButtonElement) {
                     generateSubjectOrders.mutate(accessId);
-                    queryClient.invalidateQueries();
+                    await queryClient.invalidateQueries();
                 }} disabled={generateSubjectOrders.isPending || project.data?.enabled}>Generate orders</Button>
-                <p className="text-sm text-gray-500 mt-2">This will generate orders for all subjects in this project, making the project "ready."</p>
+                <p className="text-sm text-gray-500 mt-2">This will generate orders for all subjects in this project, making the project &quot;ready.&quot;</p>
                 <p className="text-sm text-green-500">{generateSubjectOrders.isSuccess && "Successfully generated orders."}</p>
                 <p className="text-sm text-red-500">{generateSubjectOrders.error?.message}</p>
             </div>

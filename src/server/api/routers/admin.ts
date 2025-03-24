@@ -7,8 +7,24 @@ import {
 import { createProjectSchema, projectAccessId, projectExamsTabSchema, projectGeneralTabSchema, projectMusicTabSchema, projectSubjectsTabMassSchema, projectSubjectsTabSchema } from "../schemas/admin";
 import { env } from "@/env";
 import { factorial, nextPermutation } from "@/lib/utils";
+import { type User } from "next-auth";
+import { type PrismaClient } from "@prisma/client";
+import { type DefaultArgs } from "@prisma/client/runtime/library";
+import { type Client } from "minio";
 
-const failIfProjectEnabled = async (ctx: any, accessId: string) => {
+const failIfProjectEnabled = async (ctx: {
+  session: {
+    user: {
+      id: string;
+    } & User;
+    expires: string;
+  };
+  headers: Headers;
+  db: PrismaClient<{
+    log: ("query" | "warn" | "error")[];
+  }, never, DefaultArgs>;
+  s3: Client;
+}, accessId: string) => {
   const project = await ctx.db.project.findFirst({
     where: {
       accessId: accessId
@@ -151,7 +167,7 @@ export const adminRouter = createTRPCRouter({
             }
           },
           name: input.name,
-          words: input.wordList as string
+          words: input.wordList
         }
       }).then(async (exam) => {
         await ctx.db.project.update({
@@ -180,7 +196,7 @@ export const adminRouter = createTRPCRouter({
           }
         }
       });
-      await failIfProjectEnabled(ctx, exam?.project.accessId!);
+      await failIfProjectEnabled(ctx, exam?.project.accessId ?? "");
 
       return await ctx.db.exam.delete({
         where: {
@@ -236,7 +252,7 @@ export const adminRouter = createTRPCRouter({
           }
         }
       });
-      await failIfProjectEnabled(ctx, music?.project.accessId!);
+      await failIfProjectEnabled(ctx, music?.project.accessId ?? "");
 
       return await ctx.db.music.delete({
         where: {
@@ -357,7 +373,7 @@ export const adminRouter = createTRPCRouter({
           }
         }
       });
-      await failIfProjectEnabled(ctx, subject?.project.accessId!);
+      await failIfProjectEnabled(ctx, subject?.project.accessId ?? "");
 
       return await ctx.db.subject.delete({
         where: {
@@ -423,12 +439,12 @@ export const adminRouter = createTRPCRouter({
 
       // sort music array for nextPermutation
       music.sort((a, b) => a - b);
-      let firstPerm = music.slice();
+      const firstPerm = music.slice();
 
       return await Promise.all(subjects.map(async (subject) => {
         // randomize exams
         exams.sort(() => Math.random() - 0.5);
-        let nextPerm = nextPermutation(music.slice());
+        const nextPerm = nextPermutation(music.slice());
         if (nextPerm.join(",") === firstPerm.join(",")) {
           // if nextPerm is the same as firstPerm, then we have reached the end of the permutations
           // so we reset the music array to the first permutation

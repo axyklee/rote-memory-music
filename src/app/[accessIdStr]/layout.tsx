@@ -16,7 +16,7 @@ export default async function Project({ params, children }:
         if (accessId < 10000 || accessId > 99999) {
             return notFound();
         }
-    } catch (error) {
+    } catch {
         return notFound();
     }
 

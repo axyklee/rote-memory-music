@@ -33,13 +33,13 @@ export default function ExamsTable({ accessId }: { accessId: string }) {
                                 <TableCell>
                                     <p className="w-[200px] text-wrap break-words">{exam.words}</p>
                                 </TableCell>
-                                {project.data?.testItems! > JSON.parse(exam.words).length ?
+                                {(project.data?.testItems ?? 0) > (JSON.parse(exam.words) as string[]).length ?
                                     <TableCell className="text-yellow-800 bg-yellow-50">Exam items less than given to students.</TableCell> :
                                     <TableCell className=""></TableCell>}
                                 <TableCell><Button variant="destructive" disabled={project.data?.enabled} onClick={
                                     async () => {
                                         await deleteExam.mutateAsync(exam.id);
-                                        queryClient.invalidateQueries();
+                                        await queryClient.invalidateQueries();
                                     }
                                 }><Trash2 /></Button></TableCell>
                             </TableRow>

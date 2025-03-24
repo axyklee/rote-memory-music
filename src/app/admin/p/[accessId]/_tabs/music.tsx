@@ -1,10 +1,10 @@
-import GeneratedForm, { zGenForm } from "@/app/_helper/generatedForm";
+import GeneratedForm, { type zGenForm } from "@/app/_helper/generatedForm";
 import MusicTable from "@/app/admin/_components/musicTable";
 import { Input } from "@/components/ui/input";
 import { projectMusicTabSchema } from "@/server/api/schemas/admin";
 import { api } from "@/trpc/react"
 import { useState } from "react";
-import { z } from "zod";
+import { type z } from "zod";
 
 export default function MusicTab({ accessId }: { accessId: string }) {
     const project = api.admin.getProject.useQuery(accessId);
@@ -53,7 +53,7 @@ export default function MusicTab({ accessId }: { accessId: string }) {
 
                     setFileUploadMsg("Uploading file...");
 
-                    const file = e.target.files![0];
+                    const file = e.target.files[0];
                     fetch(uploadUrl.data.url, {
                         method: "PUT",
                         body: file,
@@ -92,9 +92,9 @@ export default function MusicTab({ accessId }: { accessId: string }) {
                         return await createMusic.mutateAsync(data)
                             .then(() => {
                                 form.reset();
-                                const fileInput = form.getValues("file");
-                                if (fileInput) {
-                                    fileInput.value = null;
+                                const fileInput = document.querySelector('input[type="file"]');
+                                if (fileInput instanceof HTMLInputElement) {
+                                    fileInput.value = "";
                                 }
                                 return {
                                     success: true,

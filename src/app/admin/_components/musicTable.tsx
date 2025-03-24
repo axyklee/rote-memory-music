@@ -38,7 +38,7 @@ export default function MusicTable({ accessId }: { accessId: string }) {
                                 <TableCell><Button variant="destructive" disabled={project.data?.enabled} onClick={
                                     async () => {
                                         await deleteMusic.mutateAsync(music.id);
-                                        queryClient.invalidateQueries();
+                                        await queryClient.invalidateQueries();
                                     }
                                 }><Trash2 /></Button></TableCell>
                             </TableRow>

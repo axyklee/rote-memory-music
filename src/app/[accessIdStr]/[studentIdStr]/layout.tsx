@@ -16,7 +16,7 @@ export default async function Project({ params, children }:
         if (!(Math.log10(studentId) >= 8 - 1 && Math.log10(studentId) < 8)) {
             return notFound();
         }
-    } catch (error) {
+    } catch {
         return notFound();
     }
 

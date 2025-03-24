@@ -1,4 +1,3 @@
-import { access } from "fs";
 import { z } from "zod";
 
 export const projectAccessId = z.string().regex(/^\d{5}$/)
@@ -28,7 +27,7 @@ export const projectExamsTabSchema = z.object({
     wordList: z.string()
         .superRefine((value, ctx) => {
             try {
-                const parsed = JSON.parse(value);
+                const parsed = JSON.parse(value) as string[] | null;
                 if (!Array.isArray(parsed)) {
                     ctx.addIssue({
                         code: z.ZodIssueCode.custom,
@@ -54,7 +53,7 @@ export const projectExamsTabSchema = z.object({
                     message: "Invalid JSON format",
                 });
             }
-        }).transform((value) => JSON.parse(value)).transform((value) => JSON.stringify(value)),
+        }).transform((value) => JSON.stringify(JSON.parse(value)))
 })
 
 export const projectSubjectsTabSchema = z.object({
@@ -66,7 +65,7 @@ export const projectSubjectsTabSchema = z.object({
 export const projectSubjectsTabMassSchema = z.object({
     accessId: projectAccessId,
     studentIdList: z.string().superRefine((value, ctx) => {
-        let valueArr = value.split("\n").map((item) => item.trim())
+        const valueArr = value.split("\n").map((item) => item.trim())
         if (valueArr.length === 0) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,

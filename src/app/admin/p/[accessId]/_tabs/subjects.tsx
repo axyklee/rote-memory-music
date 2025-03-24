@@ -1,9 +1,8 @@
-import GeneratedForm, { zGenForm } from "@/app/_helper/generatedForm"
+import GeneratedForm, { type zGenForm } from "@/app/_helper/generatedForm"
 import SubjectsTable from "@/app/admin/_components/subjectsTable";
-import { Button } from "@/components/ui/button";
 import { projectSubjectsTabMassSchema, projectSubjectsTabSchema } from "@/server/api/schemas/admin"
 import { api } from "@/trpc/react"
-import { z } from "zod"
+import { type z } from "zod"
 
 export default function SubjectsTab({ accessId }: { accessId: string }) {
     const project = api.admin.getProject.useQuery(accessId);

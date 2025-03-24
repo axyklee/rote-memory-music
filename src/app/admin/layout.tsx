@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { auth, signIn, signOut } from "@/server/auth";
 import { HydrateClient } from "@/trpc/server";
 import { Music } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export default async function AdminLayout({
@@ -37,7 +38,7 @@ export default async function AdminLayout({
                                 redirect: true,
                             })
                         }}>
-                            Login with <img src="https://i.imgur.com/1aiLF0c.png" className="h-6" alt="" />
+                            Login with <Image src="/myAaronTech.png" className="h-6" alt="" />
                         </Button>)
                     }
                 </div>
