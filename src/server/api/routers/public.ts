@@ -7,7 +7,10 @@ export const publicRouter = createTRPCRouter({
         .input(z.string())
         .query(async ({ ctx, input }) => {
             try {
-                await ctx.db.project.findFirstOrThrow({ where: { accessId: input } })
+                await ctx.db.project.findFirstOrThrow({ where: {
+                    accessId: input,
+                    enabled: true
+                } })
                 return true
             } catch (error) {
                 if (error instanceof PrismaClientKnownRequestError && error.code === 'P2025') {
@@ -26,7 +29,8 @@ export const publicRouter = createTRPCRouter({
                 await ctx.db.subject.findFirstOrThrow({
                     where: {
                         project: {
-                            accessId: input.accessId
+                            accessId: input.accessId,
+                            enabled: true
                         },
                         studentId: input.studentId
                     }
