@@ -277,8 +277,8 @@ export const subjectRouter = createTRPCRouter({
             // update subject
             await ctx.db.result.create({
                 data: {
-                    subjectId: subject!.id,
-                    projectId: subject!.projectId,
+                    subjectId: subject.id,
+                    projectId: subject.projectId,
                     examId: examId,
                     musicId: musicId,
                     score: Number.isNaN(score / correctAnswers.length) ? 0 : (score / correctAnswers.length),
@@ -289,7 +289,7 @@ export const subjectRouter = createTRPCRouter({
             const nextStage = input.stage + 1;
             await ctx.db.subject.update({
                 where: {
-                    id: subject!.id
+                    id: subject.id
                 },
                 data: {
                     stage: nextStage,

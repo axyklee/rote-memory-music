@@ -31,7 +31,10 @@ export default function TestingPage() {
     });
     const completeIntro = api.subject.completeIntro.useMutation({
         onSuccess: () => {
-            currStage.refetch();
+            currStage.refetch().catch(() => {
+                // Handle error
+                console.error("Failed to refetch the current stage.");
+            });
         }
     });
     const completeVolumeAdjustment = () => completeIntro.mutate({

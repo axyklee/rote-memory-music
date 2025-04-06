@@ -10,7 +10,6 @@ import { Download, Trash2 } from "lucide-react";
 export default function ResultsTable({ accessId }: { accessId: string }) {
     const queryClient = useQueryClient();
 
-    const project = api.admin.getProject.useQuery(accessId);
     const resultsList = api.admin.getResults.useQuery(accessId);
     const deleteResult = api.admin.deleteResult.useMutation();
 

@@ -11,7 +11,10 @@ export default function AudioAutoPlay ({ audioUrl, play }: { audioUrl: string, p
 
     useEffect(() => {
         if (play) {
-            audioRef.current?.play();
+            audioRef.current?.play().catch(() => {
+                // Handle the error if the audio cannot be played
+                console.error("Audio playback failed.");
+            });
         } else {
             audioRef.current?.pause();
         }

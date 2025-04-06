@@ -1,5 +1,5 @@
 import { api } from "@/trpc/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import AudioAutoPlay from "./audioAutoplay";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -61,7 +61,7 @@ export function TestScreen({ stage, accessIdStr, studentId, refetch }: TestScree
                 setTestStage(1);
             }, 1000); // small delay before moving to recall
         }
-    }, [testStage, currentWordIndex, words.data]);
+    }, [testStage, currentWordIndex, words.data, readingTime.data]);
 
     const submitAnswers = api.subject.submitAnswers.useMutation();
 
@@ -75,6 +75,46 @@ export function TestScreen({ stage, accessIdStr, studentId, refetch }: TestScree
 
     // Start 2-minute timer during recall phase
     useEffect(() => {
+        const handleSubmit = () => {
+            submitAnswers.mutateAsync({
+                subject: {
+                    accessId: accessIdStr,
+                    studentId
+                },
+                stage,
+                answers: recalledText // split into array
+            }).then(() => {
+                refetch();
+                // reset everything
+                setTestStage(-1);
+                setCurrentWordIndex(0);
+                setRecalledText([]);
+                setInputValue("");
+                setTimer(10);
+                setPlayMusic(false);
+                // refetch everything
+                words.refetch().catch(() => {
+                    // Handle error
+                    console.error("Failed to refetch the words.");
+                });
+                music.refetch().catch(() => {
+                    // Handle error
+                    console.error("Failed to refetch the music.");
+                });
+                readingTime.refetch().catch(() => {
+                    // Handle error
+                    console.error("Failed to refetch the reading time.");
+                });
+                answerTime.refetch().catch(() => {
+                    // Handle error
+                    console.error("Failed to refetch the answer time.");
+                });
+            }).catch(() => {
+                // Handle error
+                console.error("Failed to submit answers.");
+            });
+        };
+
         if (testStage === 1 && timer > 0) {
             const countdown = setTimeout(() => {
                 setTimer((prev) => prev - 1);
@@ -84,31 +124,6 @@ export function TestScreen({ stage, accessIdStr, studentId, refetch }: TestScree
             handleSubmit(); // auto submit when time is up
         }
     }, [testStage, timer]);
-
-    const handleSubmit = () => {
-        submitAnswers.mutateAsync({
-            subject: {
-                accessId: accessIdStr,
-                studentId
-            },
-            stage,
-            answers: recalledText // split into array
-        }).then(() => {
-            refetch();
-            // reset everything
-            setTestStage(-1);
-            setCurrentWordIndex(0);
-            setRecalledText([]);
-            setInputValue("");
-            setTimer(10);
-            setPlayMusic(false);
-            // refetch everything
-            words.refetch();
-            music.refetch();
-            readingTime.refetch();   
-            answerTime.refetch(); 
-        });
-    };
 
     return <div>
         {music.isSuccess && music.data && <AudioAutoPlay audioUrl={music.data} play={playMusic} />}
@@ -171,7 +186,7 @@ export function TestScreen({ stage, accessIdStr, studentId, refetch }: TestScree
                             setRecalledText((prev) => [...prev, trimmed]);
                             setInputValue("");
                         }
-                }}
+                    }}
                 >
                     Add
                 </Button>
