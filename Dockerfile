@@ -11,6 +11,8 @@ RUN bun install
 # Copy the rest of the app
 COPY . .
 
+ENV SKIP_ENV_VALIDATION=true
+
 # Build the app
 RUN bun run build
 
