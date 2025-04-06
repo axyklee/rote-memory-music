@@ -38,7 +38,7 @@ export default async function AdminLayout({
                                 redirect: true,
                             })
                         }}>
-                            Login with <Image src="/myAaronTech.png" className="h-6" alt="" />
+                            Login with <Image src="/myAaronTech.png" width={100} height={100} className="h-6" alt="" />
                         </Button>)
                     }
                 </div>

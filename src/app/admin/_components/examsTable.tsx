@@ -33,8 +33,8 @@ export default function ExamsTable({ accessId }: { accessId: string }) {
                                 <TableCell>
                                     <p className="w-[200px] text-wrap break-words">{exam.words}</p>
                                 </TableCell>
-                                {(project.data?.testItems ?? 0) > (JSON.parse(exam.words) as string[]).length ?
-                                    <TableCell className="text-yellow-800 bg-yellow-50">Exam items less than given to students.</TableCell> :
+                                {(15) > (JSON.parse(exam.words) as string[]).length ?
+                                    <TableCell className="text-yellow-800 bg-yellow-50">Exam items less than 15.</TableCell> :
                                     <TableCell className=""></TableCell>}
                                 <TableCell><Button variant="destructive" disabled={project.data?.enabled} onClick={
                                     async () => {

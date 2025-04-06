@@ -3,7 +3,7 @@ import OTP from "./_components/otp";
 
 export default async function Home() {
   return (
-    <div className="flex items-center justify-center h-[80vh]">
+    <div className="flex items-center justify-start pl-[25vw] h-[80vh]">
       <div className="space-y-7">
         <div className="space-y-5">
           <div className="flex gap-2">

@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { api } from "@/trpc/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Trash2 } from "lucide-react";
+import { Trash2, Undo2 } from "lucide-react";
 
 export default function SubjectsTable({ accessId }: { accessId: string }) {
     const queryClient = useQueryClient();
@@ -14,6 +14,7 @@ export default function SubjectsTable({ accessId }: { accessId: string }) {
     const subjectList = api.admin.getSubjects.useQuery(accessId);
     const deleteSubject = api.admin.deleteSubject.useMutation();
     const generateSubjectOrders = api.admin.generateSubjectOrders.useMutation();
+    const resetSubject = api.admin.resetSubject.useMutation();
 
     return (
         subjectList.isSuccess ? (
@@ -26,6 +27,7 @@ export default function SubjectsTable({ accessId }: { accessId: string }) {
                             <TableHead>Music Order</TableHead>
                             <TableHead>Exam Order</TableHead>
                             <TableHead>Results Count</TableHead>
+                            <TableHead>Stage</TableHead>
                             <TableHead>Action</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -39,12 +41,23 @@ export default function SubjectsTable({ accessId }: { accessId: string }) {
                                 <TableCell>[{subject.music.join(", ")}]</TableCell>
                                 <TableCell>[{subject.exam.join(", ")}]</TableCell>
                                 <TableCell>{subject.result.length}</TableCell>
-                                <TableCell><Button variant="destructive" disabled={project.data?.enabled} onClick={
-                                    async () => {
-                                        await deleteSubject.mutateAsync(subject.id);
-                                        await queryClient.invalidateQueries();
-                                    }
-                                }><Trash2 /></Button></TableCell>
+                                <TableCell>{subject.stage}</TableCell>
+                                <TableCell>
+                                    <div className="flex gap-2">
+                                        <Button variant="destructive" disabled={project.data?.enabled} onClick={
+                                            async () => {
+                                                await deleteSubject.mutateAsync(subject.id);
+                                                await queryClient.invalidateQueries();
+                                            }
+                                        }><Trash2 /></Button>
+                                        <Button className="bg-yellow-400 hover:bg-yellow-500 text-black" onClick={
+                                            async () => {
+                                                await resetSubject.mutateAsync(subject.id);
+                                                await queryClient.invalidateQueries();
+                                            }
+                                        }><Undo2 /></Button>
+                                    </div>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

@@ -123,6 +123,7 @@ export const adminRouter = createTRPCRouter({
           name: input.name,
           accessId: input.accessId,
           readingTime: input.readingTime,
+          answerTime: input.answerTime,
           enabled: input.enabled
         }
       })
@@ -549,4 +550,152 @@ export const adminRouter = createTRPCRouter({
         return subjects;
       });
     }),
+  resetSubject: protectedProcedure
+    .input(z.number().int())
+    .mutation(async ({ ctx, input }) => {
+      const subject = await ctx.db.subject.findFirst({
+        where: {
+          id: input
+        }
+      });
+      if (!subject) {
+        throw new Error("Subject not found");
+      }
+      await ctx.db.result.deleteMany({
+        where: {
+          subjectId: subject.id
+        }
+      });
+      return await ctx.db.subject.update({
+        where: {
+          id: subject.id
+        },
+        data: {
+          stage: 0,
+        }
+      });
+    }),
+
+  // Results Tab
+  getResults: protectedProcedure
+    .input(projectAccessId)
+    .query(async ({ ctx, input }) => {
+      const results = await ctx.db.result.findMany({
+        where: {
+          subject: {
+            project: {
+              accessId: input
+            }
+          }
+        },
+        orderBy: {
+          createdAt: "desc"
+        }
+      });
+      // replace musicId with music name, examId with exam name
+      return await Promise.all(results.map(async (result) => {
+        return {
+          ...result,
+          subjectStudentId: await ctx.db.subject.findFirst({
+            where: {
+              id: result.subjectId
+            },
+            select: {
+              studentId: true
+            }
+          }).then((subject) => subject?.studentId),
+          music: await ctx.db.music.findFirst({
+            where: {
+              id: result.musicId
+            },
+            select: {
+              name: true
+            }
+          }).then((music) => music?.name),
+          exam: await ctx.db.exam.findFirst({
+            where: {
+              id: result.examId
+            },
+            select: {
+              name: true
+            }
+          }).then((exam) => exam?.name),
+        }
+      }));
+    }),
+  deleteResult: protectedProcedure
+    .input(z.number())
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.result.delete({
+        where: {
+          id: input
+        }
+      });
+    }),
+  downloadResultsCsv: protectedProcedure
+    .input(projectAccessId)
+    .query(async ({ ctx, input }) => {
+      const results = await ctx.db.result.findMany({
+        where: {
+          subject: {
+            project: {
+              accessId: input
+            }
+          }
+        },
+        orderBy: {
+          createdAt: "desc"
+        }
+      });
+      const finalResults = await Promise.all(results.map(async (result) => {
+        return {
+          ...result,
+          subjectStudentId: await ctx.db.subject.findFirst({
+            where: {
+              id: result.subjectId
+            },
+            select: {
+              studentId: true
+            }
+          }).then((subject) => subject?.studentId),
+          music: await ctx.db.music.findFirst({
+            where: {
+              id: result.musicId
+            },
+            select: {
+              name: true
+            }
+          }).then((music) => music?.name),
+          exam: await ctx.db.exam.findFirst({
+            where: {
+              id: result.examId
+            },
+            select: {
+              name: true
+            }
+          }).then((exam) => exam?.name),
+        }
+      }));
+      const csvHeader = [
+        "Student ID",
+        "Music",
+        "Exam",
+        "Score",
+        "Response"
+      ];
+      const csvRows = finalResults.map((result) => [
+        result.subjectStudentId,
+        result.music,
+        result.exam,
+        result.score,
+        result.response
+      ]);
+      const csvContent = [
+        csvHeader,
+        ...csvRows
+      ].map(e => e.join(",")).join("\n");
+      return new Blob([csvContent], { type: 'text/csv' }).text().then((text) => {
+        return text;
+      });
+    })
 });

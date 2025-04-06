@@ -48,7 +48,9 @@ model Result {
   musicId   Int
   subjectId Int
   examId    Int
-  score     Int
+  score     Float
+  response  String @default("[]")
+  // [ "word1", "word2", "word3" ]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -68,6 +70,8 @@ model Subject {
   // [ 1, 2, 3, 4 ]
   examIdOrder  String
   // [ 1, 2, 3, 4 ]
+  stage        Int    @default(0)
+  // 0: volume adjustment, 1: finished
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -88,8 +92,8 @@ model Project {
   musics    Music[]
   results   Result[]
 
-  testItems Int @default(6)
-  readingTime Int @default(30)
+  readingTime Float @default(1.5)
+  answerTime  Float @default(120)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

@@ -10,8 +10,8 @@ export const projectGeneralTabSchema = z.object({
     name: z.string(),
     origAccessId: projectAccessId,
     accessId: projectAccessId,
-    testItems: z.coerce.number().int().min(1),
-    readingTime: z.coerce.number().int().min(1),
+    readingTime: z.coerce.number(),
+    answerTime: z.coerce.number(),
     enabled: z.boolean(),
 })
 

@@ -29,15 +29,15 @@ export default function GeneralTab({ accessId }: { accessId: string }) {
             type: "text"
         },
         {
-            name: "testItems",
-            label: "Test Items",
-            defaultValue: project.data?.testItems,
+            name: "readingTime",
+            label: "Reading Time (seconds/word)",
+            defaultValue: project.data?.readingTime,
             type: "number"
         },
         {
-            name: "readingTime",
-            label: "Reading Time (seconds)",
-            defaultValue: project.data?.readingTime,
+            name: "answerTime",
+            label: "Answer Time (seconds)",
+            defaultValue: project.data?.answerTime,
             type: "number"
         },
         {
@@ -68,6 +68,7 @@ export default function GeneralTab({ accessId }: { accessId: string }) {
         <GeneratedForm schema={projectGeneralTabSchema}
             formGen={formGen}
             handleSubmit={async (data: z.infer<typeof projectGeneralTabSchema>) => {
+                console.log(data)
                 return await setProjectGeneralTab.mutateAsync(data)
                     .then(() => {
                         return {
