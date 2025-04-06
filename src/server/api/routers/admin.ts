@@ -122,6 +122,7 @@ export const adminRouter = createTRPCRouter({
         data: {
           name: input.name,
           accessId: input.accessId,
+          readingTime: input.readingTime,
           enabled: input.enabled
         }
       })
