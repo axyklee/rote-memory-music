@@ -34,4 +34,4 @@ COPY --from=base /app/prisma ./prisma
 
 EXPOSE 3000
 
-CMD ["bun", "x", "run", "start"]
+CMD ["bun", "deployment"]
