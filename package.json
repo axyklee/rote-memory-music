@@ -19,7 +19,7 @@
     "preview": "next build && next start",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "deployment": "prisma migrate deploy && next start"
+    "deployment": "prisma migrate deploy && bun .next/standalone/server.js"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.2",
