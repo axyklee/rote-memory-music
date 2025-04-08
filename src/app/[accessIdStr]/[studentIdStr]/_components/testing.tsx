@@ -90,7 +90,6 @@ export function TestScreen({ stage, accessIdStr, studentId, refetch }: TestScree
                 setCurrentWordIndex(0);
                 setRecalledText([]);
                 setInputValue("");
-                setTimer(10);
                 setPlayMusic(false);
                 // refetch everything
                 words.refetch().catch(() => {
@@ -123,7 +122,7 @@ export function TestScreen({ stage, accessIdStr, studentId, refetch }: TestScree
         } else if (testStage === 1 && timer === 0) {
             handleSubmit(); // auto submit when time is up
         }
-    }, [testStage, timer, accessIdStr, answerTime, music, readingTime, recalledText, refetch, stage, studentId, submitAnswers, words]);
+    }, [testStage, timer]);
 
     return <div>
         {music.isSuccess && music.data && <AudioAutoPlay audioUrl={music.data} play={playMusic} />}
