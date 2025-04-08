@@ -55,9 +55,6 @@ export const adminRouter = createTRPCRouter({
   getProjects: protectedProcedure
     .query(async ({ ctx }) => {
       return ctx.db.project.findMany({
-        where: {
-          createdById: ctx.session.user.id
-        },
         orderBy: [
           { enabled: "desc" }, // Sort by enabled first
           { createdAt: "desc" }
