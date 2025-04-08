@@ -81,6 +81,7 @@ export function TestScreen({ stage, accessIdStr, studentId, refetch }: TestScree
         setRecalledText([]);
         setInputValue("");
         setPlayMusic(false);
+        setTimer(answerTime.data!);
         // refetch everything
         words.refetch().catch(() => {
             console.error("Failed to refetch the words.");
