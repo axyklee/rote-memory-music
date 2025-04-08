@@ -36,6 +36,9 @@ export default function Intro({ randomAudioUrl, complete }: IntroProps) {
                                             // Handle the error if the audio cannot be played
                                             console.error("Audio playback failed.");
                                         });
+                                        // Request fullscreen mode
+                                        const elem = document.documentElement;
+                                        elem.requestFullscreen();
                                     }}>
                                         <Play />
                                         Play Sample Audio
@@ -48,7 +51,8 @@ export default function Intro({ randomAudioUrl, complete }: IntroProps) {
                                         Complete Volume Adjustment
                                     </Button>
                             }
-                            <p className="text-lg mt-8">Once you have completed adjusting the volume on this page, we ask that you do not change your device&apos;s volume settings.</p>
+                            <p className="text-lg mt-8">The button above will also enter fullscreen mode. </p>
+                            <p className="text-lg mt-1">Once you have completed adjusting the volume on this page, we ask that you do not change your device&apos;s volume settings.</p>
                         </div> : stage === 2 ?
                         <div>
                             <h1 className="text-3xl font-bold mb-4 flex items-center gap-2"><ListChecks className="h-8 w-8" /> What to Expect</h1>
