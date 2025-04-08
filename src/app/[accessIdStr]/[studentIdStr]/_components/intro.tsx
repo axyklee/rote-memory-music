@@ -96,7 +96,7 @@ export default function Intro({ randomAudioUrl, complete }: IntroProps) {
                                     Begin
                                 </Button>
                             </div>
-                            <p className="text-lg mt-8">Click begin when you%apos;re ready!</p>
+                            <p className="text-lg mt-8">Click begin when you&apos;re ready!</p>
                         </div>
                 }
             </div>
