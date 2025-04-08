@@ -73,6 +73,29 @@ export function TestScreen({ stage, accessIdStr, studentId, refetch }: TestScree
         setTimer(answerTime.data!); // reset timer when answer time changes
     }, [answerTime.data]);
 
+    const refetchData = () => {
+        refetch();
+        // reset everything
+        setTestStage(-1);
+        setCurrentWordIndex(0);
+        setRecalledText([]);
+        setInputValue("");
+        setPlayMusic(false);
+        // refetch everything
+        words.refetch().catch(() => {
+            console.error("Failed to refetch the words.");
+        });
+        music.refetch().catch(() => {
+            console.error("Failed to refetch the music.");
+        });
+        readingTime.refetch().catch(() => {
+            console.error("Failed to refetch the reading time.");
+        });
+        answerTime.refetch().catch(() => {
+            console.error("Failed to refetch the answer time.");
+        });
+    }
+
     // Start 2-minute timer during recall phase
     useEffect(() => {
         const handleSubmit = () => {
@@ -84,30 +107,7 @@ export function TestScreen({ stage, accessIdStr, studentId, refetch }: TestScree
                 stage,
                 answers: recalledText // split into array
             }).then(() => {
-                refetch();
-                // reset everything
-                setTestStage(-1);
-                setCurrentWordIndex(0);
-                setRecalledText([]);
-                setInputValue("");
-                setPlayMusic(false);
-                // refetch everything
-                words.refetch().catch(() => {
-                    // Handle error
-                    console.error("Failed to refetch the words.");
-                });
-                music.refetch().catch(() => {
-                    // Handle error
-                    console.error("Failed to refetch the music.");
-                });
-                readingTime.refetch().catch(() => {
-                    // Handle error
-                    console.error("Failed to refetch the reading time.");
-                });
-                answerTime.refetch().catch(() => {
-                    // Handle error
-                    console.error("Failed to refetch the answer time.");
-                });
+                refetchData();
             }).catch(() => {
                 // Handle error
                 console.error("Failed to submit answers.");
