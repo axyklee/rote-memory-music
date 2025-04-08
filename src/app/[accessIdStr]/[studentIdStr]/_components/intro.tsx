@@ -30,7 +30,7 @@ export default function Intro({ randomAudioUrl, complete }: IntroProps) {
 
                             {
                                 stage === 0 ?
-                                    <Button className="bg-sky-700 text-white hover:bg-sky-800" onClick={() => {
+                                    <Button className="bg-sky-700 text-white hover:bg-sky-800" onClick={async () => {
                                         setStage(1);
                                         audioRef.current?.play().catch(() => {
                                             // Handle the error if the audio cannot be played
@@ -38,7 +38,9 @@ export default function Intro({ randomAudioUrl, complete }: IntroProps) {
                                         });
                                         // Request fullscreen mode
                                         const elem = document.documentElement;
-                                        elem.requestFullscreen();
+                                        elem.requestFullscreen().catch((err) => {
+                                            console.error("Failed to enter fullscreen mode:", err);
+                                        });
                                     }}>
                                         <Play />
                                         Play Sample Audio
