@@ -123,7 +123,7 @@ export function TestScreen({ stage, accessIdStr, studentId, refetch }: TestScree
         } else if (testStage === 1 && timer === 0) {
             handleSubmit(); // auto submit when time is up
         }
-    }, [testStage, timer]);
+    }, [testStage, timer, accessIdStr, answerTime, music, readingTime, recalledText, refetch, stage, studentId, submitAnswers, words]);
 
     return <div>
         {music.isSuccess && music.data && <AudioAutoPlay audioUrl={music.data} play={playMusic} />}
