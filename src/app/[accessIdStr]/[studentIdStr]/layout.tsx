@@ -7,13 +7,13 @@ export default async function Project({ params, children }:
     const { accessIdStr, studentIdStr } = await params;
     let studentId: number;
 
-    if (studentIdStr.length !== 8) {
+    if (studentIdStr.length !== 6) {
         return notFound();
     }
 
     try {
         studentId = parseInt(studentIdStr);
-        if (!(Math.log10(studentId) >= 8 - 1 && Math.log10(studentId) < 8)) {
+        if (!(Math.log10(studentId) >= 6 - 1 && Math.log10(studentId) < 6)) {
             return notFound();
         }
     } catch {

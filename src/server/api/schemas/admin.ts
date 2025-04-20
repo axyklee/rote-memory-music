@@ -58,7 +58,7 @@ export const projectExamsTabSchema = z.object({
 
 export const projectSubjectsTabSchema = z.object({
     accessId: projectAccessId,
-    studentId: z.coerce.number().gte(10000000, "Student ID must be 8 digits.").lte(99999999, "Student ID must be 8 digits."),
+    studentId: z.coerce.number().gte(100000, "Student ID must be 6 digits.").lte(999999, "Student ID must be 6 digits."),
     name: z.string().optional(),
 })
 
@@ -72,10 +72,10 @@ export const projectSubjectsTabMassSchema = z.object({
                 message: "You must have at least one student ID",
             });
         }
-        if (!valueArr.every((item) => /^\d{8}$/.test(item))) {
+        if (!valueArr.every((item) => /^\d{6}$/.test(item))) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: "Student IDs must be 8 digits",
+                message: "Student IDs must be 6 digits",
             });
         }
         // no duplicates
