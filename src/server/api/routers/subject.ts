@@ -89,7 +89,7 @@ export const subjectRouter = createTRPCRouter({
         }))
         .query(async ({ ctx, input }) => {
             const { accessId, studentId } = input.subject;
-            const subject = await ctx.db.subject.findFirst({
+            let subject = await ctx.db.subject.findFirst({
                 where: {
                     project: {
                         accessId
@@ -101,6 +101,7 @@ export const subjectRouter = createTRPCRouter({
                         select: {
                             musics: {
                                 select: {
+                                    name: true,
                                     url: true
                                 }
                             }
@@ -109,7 +110,7 @@ export const subjectRouter = createTRPCRouter({
                 }
             });
             if (!subject) throw new Error("Subject not found");
-            const musics = subject.project.musics;
+            const musics = subject.project.musics.filter((music) => !music.name.includes("silent"));
             if (musics.length === 0) throw new Error("No music found");
             const randomIndex = Math.floor(Math.random() * musics.length);
             return await ctx.s3.presignedGetObject(env.MINIO_BUCKET, musics[randomIndex]!.url, 60 * 60 * 24) // 1 day
