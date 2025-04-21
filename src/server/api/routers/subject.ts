@@ -89,7 +89,7 @@ export const subjectRouter = createTRPCRouter({
         }))
         .query(async ({ ctx, input }) => {
             const { accessId, studentId } = input.subject;
-            let subject = await ctx.db.subject.findFirst({
+            const subject = await ctx.db.subject.findFirst({
                 where: {
                     project: {
                         accessId
