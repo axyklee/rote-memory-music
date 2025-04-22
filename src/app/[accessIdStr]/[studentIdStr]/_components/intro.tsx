@@ -60,8 +60,9 @@ export default function Intro({ randomAudioUrl, complete }: IntroProps) {
                             <h1 className="text-3xl font-bold mb-4 flex items-center gap-2"><ListChecks className="h-8 w-8" /> What to Expect</h1>
                             <ol className="list-disc list-inside mb-4">
                                 <li>You will complete a few short memory trials, each with a different background sound.</li>
-                                <li>During each trial, you will be asked to memorize a list of 15 English words.</li>
+                                <li>During each trial, you will be asked to memorize a list English words.</li>
                                 <li>The words will appear one at a time, and you will have about 1-2 seconds to view each word.</li>
+                                <li>Words may appear more than once.</li>
                                 <li>After the word list ends, you will type down as many words as you can remember, in any order.</li>
                                 <li>There will be short breaks between each trial.</li>
                             </ol>
