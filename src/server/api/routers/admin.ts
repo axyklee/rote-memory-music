@@ -726,7 +726,7 @@ export const adminRouter = createTRPCRouter({
         const correctAnswers = (JSON.parse(result.exam.words ?? "[]") as string[]) ?? null;
 
         let score = 0;
-        let response: string[] = [];
+        const response: string[] = [];
         (JSON.parse(result.response ?? "[]") as string[] ?? null).forEach((resp) => {
             if (resp.includes(",")) {
                 response.push(...resp.split(",").map((r) => r.trim().toLowerCase()));
