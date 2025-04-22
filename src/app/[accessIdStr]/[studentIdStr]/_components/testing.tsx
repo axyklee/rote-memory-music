@@ -171,7 +171,7 @@ export function TestScreen({ stage, accessIdStr, studentId, refetch }: TestScree
                     onKeyDown={(e) => {
                         if (e.key === "Enter") {
                             const trimmed = inputValue.trim();
-                            if (trimmed !== "") {
+                            if (trimmed !== "" && !recalledText.includes(trimmed)) {
                                 setRecalledText((prev) => [...prev, trimmed]);
                                 setInputValue("");
                             }
