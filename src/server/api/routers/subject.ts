@@ -270,8 +270,16 @@ export const subjectRouter = createTRPCRouter({
             const correctAnswers = (JSON.parse(exam?.words ?? "[]") as string[]) ?? null;
             // calculate score is the number of correct answers
             let score = 0;
+            let response: string[] = [];
+            input.answers.forEach((resp) => {
+                if (resp.includes(",")) {
+                    response.push(...resp.split(",").map((r) => r.trim().toLowerCase()));
+                } else {
+                    response.push(resp.trim().toLowerCase());
+                }
+            })
             correctAnswers.forEach((answer) => {
-                if (input.answers.includes(answer)) {
+                if (response.includes(answer)) {
                     score++;
                 }
             });

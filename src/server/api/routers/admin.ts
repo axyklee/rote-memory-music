@@ -694,5 +694,62 @@ export const adminRouter = createTRPCRouter({
       return new Blob([csvContent], { type: 'text/csv' }).text().then((text) => {
         return text;
       });
+    }),
+  recalculateResults: protectedProcedure
+    .input(projectAccessId)
+    .mutation(async ({ ctx, input }) => {
+      const project = await ctx.db.project.findFirst({
+        where: {
+          accessId: input
+        },
+        select: {
+          results: {
+            select: {
+              id: true,
+              exam: {
+                select: {
+                  words: true
+                }
+              },
+              response: true,
+            }
+          }
+        }
+      });
+      if (!project) {
+        throw new Error("Project not found");
+      }
+      if (project.results.length === 0) {
+        throw new Error("No results found");
+      }
+      project.results.forEach(async (result) => {
+        const correctAnswers = (JSON.parse(result.exam.words ?? "[]") as string[]) ?? null;
+
+        let score = 0;
+        let response: string[] = [];
+        (JSON.parse(result.response ?? "[]") as string[] ?? null).forEach((resp) => {
+            if (resp.includes(",")) {
+                response.push(...resp.split(",").map((r) => r.trim().toLowerCase()));
+            } else {
+                response.push(resp.trim().toLowerCase());
+            }
+        })
+        correctAnswers.forEach((answer) => {
+            if (response.includes(answer)) {
+                score++;
+            }
+        });
+        await ctx.db.result.update({
+          where: {
+            id: result.id
+          },
+          data: {
+            score: score,
+          }
+        })
+      })
+      return {
+        message: "Results recalculated successfully"
+      }
     })
 });

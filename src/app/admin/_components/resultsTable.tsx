@@ -12,6 +12,7 @@ export default function ResultsTable({ accessId }: { accessId: string }) {
 
     const resultsList = api.admin.getResults.useQuery(accessId);
     const deleteResult = api.admin.deleteResult.useMutation();
+    const recalculateResults = api.admin.recalculateResults.useMutation();
 
     return (
         resultsList.isSuccess ? (
@@ -49,6 +50,15 @@ export default function ResultsTable({ accessId }: { accessId: string }) {
                         ))}
                     </TableBody>
                 </Table>
+                <Button variant="default" className="bg-blue-700 hover:bg-blue-600 w-full" onClick={async function (this: HTMLButtonElement) {
+                    await recalculateResults.mutateAsync(accessId);
+                    await queryClient.invalidateQueries();
+                }} disabled={recalculateResults.isPending}>Recalculate results</Button>
+                <p className="text-sm text-gray-500 mt-2">This will recauclate results for all results in this project, adjusting to user responses.</p>
+                <p className="text-sm text-green-500">{recalculateResults.isSuccess && "Successfully recalculated results."}</p>
+                <p className="text-sm text-red-500">{recalculateResults.error?.message}</p>
+
+                <p className="text-xs">Changelog: 04/22 Adjust for spaces, capitalization, and entering all entries separated by commas without pressing add.</p>
                 <div className="flex justify-end mt-4">
                     <Button variant="outline" onClick={async () => {
                         // create a csv file from the resultsList data
