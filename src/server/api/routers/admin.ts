@@ -744,7 +744,7 @@ export const adminRouter = createTRPCRouter({
             id: result.id
           },
           data: {
-            score: score,
+            score: Number.isNaN(score / correctAnswers.length) ? 0 : (score / correctAnswers.length),
           }
         });
       }));
