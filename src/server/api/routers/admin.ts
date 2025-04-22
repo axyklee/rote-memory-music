@@ -722,22 +722,22 @@ export const adminRouter = createTRPCRouter({
       if (project.results.length === 0) {
         throw new Error("No results found");
       }
-      project.results.forEach(async (result) => {
+      await Promise.all(project.results.map(async (result) => {
         const correctAnswers = (JSON.parse(result.exam.words ?? "[]") as string[]) ?? null;
 
         let score = 0;
         const response: string[] = [];
         (JSON.parse(result.response ?? "[]") as string[] ?? null).forEach((resp) => {
-            if (resp.includes(",")) {
-                response.push(...resp.split(",").map((r) => r.trim().toLowerCase()));
-            } else {
-                response.push(resp.trim().toLowerCase());
-            }
-        })
+          if (resp.includes(",")) {
+            response.push(...resp.split(",").map((r) => r.trim().toLowerCase()));
+          } else {
+            response.push(resp.trim().toLowerCase());
+          }
+        });
         correctAnswers.forEach((answer) => {
-            if (response.includes(answer)) {
-                score++;
-            }
+          if (response.includes(answer)) {
+            score++;
+          }
         });
         await ctx.db.result.update({
           where: {
@@ -746,8 +746,8 @@ export const adminRouter = createTRPCRouter({
           data: {
             score: score,
           }
-        })
-      })
+        });
+      }));
       return {
         message: "Results recalculated successfully"
       }
