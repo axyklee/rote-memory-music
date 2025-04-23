@@ -121,6 +121,11 @@ export function TestScreen({ stage, accessIdStr, studentId, refetch }: TestScree
             }, 1000);
             return () => clearTimeout(countdown);
         } else if (testStage === 1 && timer === 0) {
+            const trimmed = inputValue.trim();
+            if (trimmed !== "" && !recalledText.includes(trimmed)) {
+                setRecalledText((prev) => [...prev, trimmed]);
+                setInputValue("");
+            }
             handleSubmit(); // auto submit when time is up
         }
     }, [testStage, timer]);
