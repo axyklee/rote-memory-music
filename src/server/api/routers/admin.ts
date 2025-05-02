@@ -730,6 +730,8 @@ export const adminRouter = createTRPCRouter({
         (JSON.parse(result.response ?? "[]") as string[] ?? null).forEach((resp) => {
           if (resp.includes(",")) {
             response.push(...resp.split(",").map((r) => r.trim().toLowerCase()));
+          } if (resp.trim().includes(" ")) {
+            response.push(...resp.trim().split(" ").map((r) => r.trim().toLowerCase()));
           } else {
             response.push(resp.trim().toLowerCase());
           }
